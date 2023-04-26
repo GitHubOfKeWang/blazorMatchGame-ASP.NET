@@ -14,16 +14,19 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var animal in shuffleAnimals)
-        {
-            <div class="col-3">
-                <button type="button" class="btn btn-outline-dark">
-                    <h1>@animal</h1>
-                </button>
-            </div>
-        }
+        @for (var animalNumber = 0; animalNumber < animalEmoji.Count; animalNumber++)
+{
+                var animal = shuffleAnimals[animalNumber];
+                var animalIndex = animalNumber;
+                <div class="col-3">
+                    <button type="button" class="btn btn-outline-dark" @onclick="@(() => ButtonClick(animal, animalIndex))">
+                        <h1>@animal</h1>
+                    </button>
+                </div>
+}
     </div>
  </div>
+
 
 @code {
     List<string> animalEmoji = new List<string>()
@@ -50,5 +53,29 @@
         shuffleAnimals = animalEmoji.
                             OrderBy(item => random.Next()).
                             ToList();
+    }
+
+    string lastAnimalFound = string.Empty;
+    int lastAnimalIndex = -1;
+
+    private void ButtonClick(string animal, int uniqueIdx) {
+        if (lastAnimalFound == string.Empty)
+        {
+            lastAnimalFound = animal;
+            lastAnimalIndex = uniqueIdx;
+            return;
+        } else if (lastAnimalFound == animal)
+        {
+            if (lastAnimalIndex == uniqueIdx)
+            {
+                //when click the same button multiple times, keep the lastAnimalFound and lastAnimalIndex unchanged
+                return;
+            }
+            //replace the matched animals with empty string to hide them
+            shuffleAnimals = shuffleAnimals.Select(a => a.Replace(animal, string.Empty)).ToList();
+        }
+
+        lastAnimalFound = string.Empty;
+        lastAnimalIndex = -1;
     }
 }
