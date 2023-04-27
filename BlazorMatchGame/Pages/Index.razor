@@ -57,6 +57,7 @@
 
     string lastAnimalFound = string.Empty;
     int lastAnimalIndex = -1;
+    int matchedAnimalNumber = 0;
 
     private void ButtonClick(string animal, int uniqueIdx) {
         if (lastAnimalFound == string.Empty)
@@ -73,9 +74,27 @@
             }
             //replace the matched animals with empty string to hide them
             shuffleAnimals = shuffleAnimals.Select(a => a.Replace(animal, string.Empty)).ToList();
+
+            //the two different block matched, then the matchedAnimalNumber increase by 2
+            matchedAnimalNumber += 2;
+
+            //when all animal button macthed in the board, reset the board
+            if (matchedAnimalNumber == animalEmoji.Count)
+            {
+                Random random = new Random();
+                shuffleAnimals = animalEmoji.OrderBy(item => random.Next()).ToList();
+            }
+
+            //initialize the last animal related data
+            lastAnimalFound = string.Empty;
+            lastAnimalIndex = -1;
+        } else
+        {
+            //update the last-animal data as chosed a different animal this time
+            lastAnimalFound = animal;
+            lastAnimalIndex = uniqueIdx;
         }
 
-        lastAnimalFound = string.Empty;
-        lastAnimalIndex = -1;
+
     }
 }
